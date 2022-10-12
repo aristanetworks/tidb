@@ -904,6 +904,7 @@ var btFuncTokenMap = map[string]int{
 	"BIT_XOR":               builtinBitXor,
 	"CAST":                  builtinCast,
 	"COUNT":                 builtinCount,
+	"UNIQ":                  builtinUniq,
 	"APPROX_COUNT_DISTINCT": builtinApproxCountDistinct,
 	"APPROX_PERCENTILE":     builtinApproxPercentile,
 	"CURDATE":               builtinCurDate,

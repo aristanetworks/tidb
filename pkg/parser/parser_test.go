@@ -2204,6 +2204,16 @@ func TestBuiltin(t *testing.T) {
 		{`select json_objectagg(all c1, c2) from t group by c1`, true, "SELECT JSON_OBJECTAGG(`c1`, `c2`) FROM `t` GROUP BY `c1`"},
 		{`select json_objectagg(c1, all c2) from t group by c1`, true, "SELECT JSON_OBJECTAGG(`c1`, `c2`) FROM `t` GROUP BY `c1`"},
 		{`select json_objectagg(all c1, all c2) from t group by c1`, true, "SELECT JSON_OBJECTAGG(`c1`, `c2`) FROM `t` GROUP BY `c1`"},
+		{`select uniq(c1) from t;`, true, "SELECT UNIQ(`c1`) FROM `t`"},
+		{`select uniq(distinct *) from t;`, false, ""},
+		{`select uniq(distinctrow *) from t;`, false, ""},
+		{`select uniq(*) from t;`, true, "SELECT UNIQ(1) FROM `t`"},
+		{`select uniq(distinct c1, c2) from t;`, false, ""},
+		{`select uniq(distinctrow c1, c2) from t;`, false, ""},
+		{`select uniq(c1, c2) from t;`, true, "SELECT UNIQ(`c1`, `c2`) FROM `t`"},
+		{`select uniq(all c1) from t;`, false, ""},
+		{`select uniq(distinct all c1) from t;`, false, ""},
+		{`select uniq(distinctrow all c1) from t;`, false, ""},
 
 		// for encryption and compression functions
 		{`select AES_ENCRYPT('text',UNHEX('F3229A0B371ED2D9441B830D21A390C3'))`, true, "SELECT AES_ENCRYPT(_UTF8MB4'text', UNHEX(_UTF8MB4'F3229A0B371ED2D9441B830D21A390C3'))"},

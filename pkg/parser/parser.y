@@ -846,6 +846,7 @@ import (
 	builtinBitXor
 	builtinCast
 	builtinCount
+	builtinUniq
 	builtinApproxCountDistinct
 	builtinApproxPercentile
 	builtinCurDate
@@ -8254,6 +8255,15 @@ SumExpr:
 		} else {
 			$$ = &ast.AggregateFuncExpr{F: $1, Args: args}
 		}
+	}
+|	builtinUniq '(' '*' ')'
+	{
+		args := []ast.ExprNode{ast.NewValueExpr(1, parser.charset, parser.collation)}
+		$$ = &ast.AggregateFuncExpr{F: $1, Args: args}
+	}
+|	builtinUniq '(' ExpressionList ')'
+	{
+		$$ = &ast.AggregateFuncExpr{F: $1, Args: $3.([]ast.ExprNode)}
 	}
 |	builtinGroupConcat '(' BuggyDefaultFalseDistinctOpt ExpressionList OrderByOptional OptGConcatSeparator ')' OptWindowingClause
 	{
