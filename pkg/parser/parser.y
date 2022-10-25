@@ -184,8 +184,10 @@ import (
 	keys              "KEYS"
 	kill              "KILL"
 	lag               "LAG"
+	laginframe        "LAGINFRAME"
 	lastValue         "LAST_VALUE"
 	lead              "LEAD"
+	leadinframe       "LEADINFRAME"
 	leading           "LEADING"
 	leave             "LEAVE"
 	left              "LEFT"
@@ -9478,6 +9480,10 @@ WindowFuncCall:
 		}
 		$$ = &ast.WindowFuncExpr{Name: $1, Args: args, IgnoreNull: $6.(bool), Spec: $7.(ast.WindowSpec)}
 	}
+|	"LEADINFRAME" '(' Expression ')' WindowingClause
+	{
+		$$ = &ast.WindowFuncExpr{Name: $1, Args: []ast.ExprNode{$3}, Spec: $5.(ast.WindowSpec)}
+	}
 |	"LAG" '(' Expression OptLeadLagInfo ')' OptNullTreatment WindowingClause
 	{
 		args := []ast.ExprNode{$3}
@@ -9485,6 +9491,10 @@ WindowFuncCall:
 			args = append(args, $4.([]ast.ExprNode)...)
 		}
 		$$ = &ast.WindowFuncExpr{Name: $1, Args: args, IgnoreNull: $6.(bool), Spec: $7.(ast.WindowSpec)}
+	}
+|	"LAGINFRAME" '(' Expression ')' WindowingClause
+	{
+		$$ = &ast.WindowFuncExpr{Name: $1, Args: []ast.ExprNode{$3}, Spec: $5.(ast.WindowSpec)}
 	}
 |	"FIRST_VALUE" '(' Expression ')' OptNullTreatment WindowingClause
 	{
