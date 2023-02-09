@@ -413,7 +413,7 @@ func (n *FuncCallExpr) Restore(ctx *format.RestoreCtx) error {
 		if err := n.Args[1].Restore(ctx); err != nil {
 			return errors.Annotatef(err, "An error occurred while restore FuncCastExpr.Expr")
 		}
-	case "adddate", "subdate", "date_add", "date_sub":
+	case "adddate", "subdate", "date_add", "date_sub", "tostartofinterval":
 		if err := n.Args[0].Restore(ctx); err != nil {
 			return errors.Annotatef(err, "An error occurred while restore FuncCallExpr.Args[0]")
 		}

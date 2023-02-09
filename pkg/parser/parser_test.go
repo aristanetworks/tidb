@@ -2098,6 +2098,10 @@ func TestBuiltin(t *testing.T) {
 		{`select subdate("2011-11-11 10:10:10.123456", 0.10)`, true, "SELECT SUBDATE(_UTF8MB4'2011-11-11 10:10:10.123456', INTERVAL 0.10 DAY)"},
 		{`select subdate("2011-11-11 10:10:10.123456", "11,11")`, true, "SELECT SUBDATE(_UTF8MB4'2011-11-11 10:10:10.123456', INTERVAL _UTF8MB4'11,11' DAY)"},
 
+		// for toStartOfInterval
+		{`select toStartOfInterval("2011-11-11 10:10:10.123456", interval 1 year)`, true, "SELECT TOSTARTOFINTERVAL(_UTF8MB4'2011-11-11 10:10:10.123456', INTERVAL 1 YEAR)"},
+		{`select toStartOfInterval(t, INTERVAL 1 day)`, true, "SELECT TOSTARTOFINTERVAL(`t`, INTERVAL 1 DAY)"},
+
 		// for unix_timestamp
 		{`select unix_timestamp()`, true, "SELECT UNIX_TIMESTAMP()"},
 		{`select unix_timestamp('2015-11-13 10:20:19.012')`, true, "SELECT UNIX_TIMESTAMP(_UTF8MB4'2015-11-13 10:20:19.012')"},
