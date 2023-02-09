@@ -655,6 +655,7 @@ import (
 	curTime               "CURTIME"
 	dateAdd               "DATE_ADD"
 	dateSub               "DATE_SUB"
+	toStartOfInterval     "TOSTARTOFINTERVAL"
 	dotType               "DOT"
 	dump                  "DUMP"
 	exact                 "EXACT"
@@ -787,6 +788,7 @@ import (
 	builtinCurTime
 	builtinDateAdd
 	builtinDateSub
+	toStartOfInterval
 	builtinExtract
 	builtinGroupConcat
 	builtinMax
@@ -1241,7 +1243,7 @@ import (
 	TableToTableList                       "rename table to table by list"
 	TextString                             "text string item"
 	TextStringList                         "text string list"
-	TimeUnit                               "Time unit for 'DATE_ADD', 'DATE_SUB', 'ADDDATE', 'SUBDATE', 'EXTRACT'"
+	TimeUnit                               "Time unit for 'DATE_ADD', 'DATE_SUB', 'TOSTARTOFINTERVAL', 'ADDDATE', 'SUBDATE', 'EXTRACT'"
 	TimestampUnit                          "Time unit for 'TIMESTAMPADD' and 'TIMESTAMPDIFF'"
 	LockType                               "Table locks type"
 	TransactionChar                        "Transaction characteristic"
@@ -1411,7 +1413,7 @@ import (
 	FunctionNameConflict            "Built-in function call names which are conflict with keywords"
 	FunctionNameOptionalBraces      "Function with optional braces, all of them are reserved keywords."
 	FunctionNameDatetimePrecision   "Function with optional datetime precision, all of them are reserved keywords."
-	FunctionNameDateArith           "Date arith function call names (date_add or date_sub)"
+	FunctionNameDateArith           "Date arith function call names (date_add or date_sub or toStartOfInterval)"
 	FunctionNameDateArithMultiForms "Date arith function call names (adddate or subdate)"
 	VariableName                    "A simple Identifier like xx or the xx.xx form"
 	ConfigItemName                  "A config item like aa or aa.bb or aa.bb-cc.dd"
@@ -6475,6 +6477,7 @@ NotKeywordToken:
 |	"CURTIME"
 |	"DATE_ADD"
 |	"DATE_SUB"
+|	"TOSTARTOFINTERVAL"
 |	"DOT"
 |	"DUMP"
 |	"EXTRACT"
@@ -7616,6 +7619,7 @@ GetFormatSelector:
 FunctionNameDateArith:
 	builtinDateAdd
 |	builtinDateSub
+|	toStartOfInterval
 
 FunctionNameDateArithMultiForms:
 	addDate
