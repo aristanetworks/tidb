@@ -255,8 +255,10 @@ func GetSupportedCollations() []*charset.Collation {
 				newSupportedCollations = append(newSupportedCollations, coll)
 			}
 		}
-		slices.SortFunc(newSupportedCollations, func(i, j *charset.Collation) bool {
-			return i.Name < j.Name
+		slices.SortFunc(newSupportedCollations, func(i, j *charset.Collation) int {
+			if i.Name < j.Name { return -1 }
+			if i.Name > j.Name { return 1 }
+			return 0
 		})
 		return newSupportedCollations
 	}
