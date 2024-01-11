@@ -30,6 +30,8 @@ require (
 	github.com/coocood/freecache v1.2.1
 	github.com/coreos/go-semver v0.3.1
 	github.com/cznic/mathutil v0.0.0-20181122101859-297441e03548
+	github.com/cznic/sortutil v0.0.0-20181122101858-f5f958428db8
+	github.com/cznic/strutil v0.0.0-20181122101858-275e90344537
 	github.com/daixiang0/gci v0.11.2
 	github.com/danjacques/gofslock v0.0.0-20191023191349-0a45f885bc37
 	github.com/dgraph-io/ristretto v0.1.1
@@ -86,7 +88,6 @@ require (
 	github.com/pingcap/kvproto v0.0.0-20231226064240-4f28b82c7860
 	github.com/pingcap/log v1.1.1-0.20230317032135-a0d097d16e22
 	github.com/pingcap/sysutil v1.0.1-0.20230407040306-fb007c5aff21
-	github.com/pingcap/tidb/pkg/parser v0.0.0-20211011031125-9b13dc409c5e
 	github.com/pingcap/tipb v0.0.0-20230919054518-dfd7d194838f
 	github.com/prometheus/client_golang v1.18.0
 	github.com/prometheus/client_model v0.5.0
@@ -139,6 +140,8 @@ require (
 	gopkg.in/yaml.v2 v2.4.0
 	honnef.co/go/tools v0.4.6
 	k8s.io/api v0.28.2
+	modernc.org/parser v1.1.0
+	modernc.org/y v1.1.0
 	sourcegraph.com/sourcegraph/appdash v0.0.0-20190731080439-ebfcffb1b5c0
 	sourcegraph.com/sourcegraph/appdash-data v0.0.0-20151005221446-73f23eafcf67
 )
@@ -166,6 +169,10 @@ require (
 	google.golang.org/genproto/googleapis/api v0.0.0-20231120223509-83a465c0220f // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20231212172506-995d672761c0 // indirect
 	k8s.io/utils v0.0.0-20230711102312-30195339c3c7 // indirect
+	modernc.org/golex v1.1.0 // indirect
+	modernc.org/mathutil v1.6.0 // indirect
+	modernc.org/sortutil v1.2.0 // indirect
+	modernc.org/strutil v1.2.0 // indirect
 )
 
 require (
@@ -313,7 +320,6 @@ replace (
 	// fix potential security issue(CVE-2020-26160) introduced by indirect dependency.
 	github.com/dgrijalva/jwt-go => github.com/form3tech-oss/jwt-go v3.2.6-0.20210809144907-32ab6a8243d7+incompatible
 	github.com/go-ldap/ldap/v3 => github.com/YangKeao/ldap/v3 v3.4.5-0.20230421065457-369a3bab1117
-	github.com/pingcap/tidb/pkg/parser => ./pkg/parser
 
 	// TODO: `sourcegraph.com/sourcegraph/appdash` has been archived, and the original host has been removed.
 	// Please remove these dependencies.
