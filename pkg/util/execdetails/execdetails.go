@@ -495,7 +495,7 @@ func (p *Percentile[valueType]) MergePercentile(p2 *Percentile[valueType]) {
 		}
 		p.values = nil
 	}
-	p.dt.AddCentroidList(p2.dt.Centroids())
+	p.dt.AddCentroidList(p2.dt.Centroids(nil))
 }
 
 // Size returns the size of the values.
