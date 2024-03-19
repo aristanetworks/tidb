@@ -678,6 +678,7 @@ import (
 	learner               "LEARNER"
 	learnerConstraints    "LEARNER_CONSTRAINTS"
 	learners              "LEARNERS"
+	median                "MEDIAN"
 	min                   "MIN"
 	max                   "MAX"
 	now                   "NOW"
@@ -688,6 +689,7 @@ import (
 	position              "POSITION"
 	predicate             "PREDICATE"
 	primaryRegion         "PRIMARY_REGION"
+	quantile              "QUANTILE"
 	recent                "RECENT"
 	replayer              "REPLAYER"
 	running               "RUNNING"
@@ -6486,6 +6488,7 @@ NotKeywordToken:
 |	"INPLACE"
 |	"INSTANT"
 |	"INTERNAL"
+|	"MEDIAN"
 |	"MIN"
 |	"MAX"
 |	"NOW"
@@ -6497,6 +6500,7 @@ NotKeywordToken:
 |	"PLAN_CACHE"
 |	"POSITION"
 |	"PREDICATE"
+|	"QUANTILE"
 |	"S3"
 |	"STRICT"
 |	"SUBDATE"
@@ -7878,6 +7882,22 @@ SumExpr:
 			$$ = &ast.WindowFuncExpr{F: $1, Args: []ast.ExprNode{$4, $7}, Spec: *($9.(*ast.WindowSpec))}
 		} else {
 			$$ = &ast.AggregateFuncExpr{F: $1, Args: []ast.ExprNode{$4, $7}}
+		}
+	}
+|	"QUANTILE" '(' BuggyDefaultFalseDistinctOpt Expression ',' Expression ')' OptWindowingClause
+	{
+		if $8 != nil {
+			$$ = &ast.WindowFuncExpr{F: $1, Args: []ast.ExprNode{$4, $6}, Distinct: $3.(bool), Spec: *($8.(*ast.WindowSpec))}
+		} else {
+			$$ = &ast.AggregateFuncExpr{F: $1, Args: []ast.ExprNode{$4, $6}, Distinct: $3.(bool)}
+		}
+	}
+|	"MEDIAN" '(' BuggyDefaultFalseDistinctOpt Expression ')' OptWindowingClause
+	{
+		if $6 != nil {
+			$$ = &ast.WindowFuncExpr{F: $1, Args: []ast.ExprNode{$4}, Distinct: $3.(bool), Spec: *($6.(*ast.WindowSpec))}
+		} else {
+			$$ = &ast.AggregateFuncExpr{F: $1, Args: []ast.ExprNode{$4}, Distinct: $3.(bool)}
 		}
 	}
 
