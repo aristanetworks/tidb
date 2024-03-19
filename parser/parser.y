@@ -7884,12 +7884,12 @@ SumExpr:
 			$$ = &ast.AggregateFuncExpr{F: $1, Args: []ast.ExprNode{$4, $7}}
 		}
 	}
-|	"QUANTILE" '(' BuggyDefaultFalseDistinctOpt Expression ',' Expression ')' OptWindowingClause
+|	"QUANTILE" '(' BuggyDefaultFalseDistinctOpt Expression ',' NumLiteral ')' OptWindowingClause
 	{
 		if $8 != nil {
-			$$ = &ast.WindowFuncExpr{F: $1, Args: []ast.ExprNode{$4, $6}, Distinct: $3.(bool), Spec: *($8.(*ast.WindowSpec))}
+			$$ = &ast.WindowFuncExpr{F: $1, Args: []ast.ExprNode{$4, ast.NewValueExpr($6, "", "")}, Distinct: $3.(bool), Spec: *($8.(*ast.WindowSpec))}
 		} else {
-			$$ = &ast.AggregateFuncExpr{F: $1, Args: []ast.ExprNode{$4, $6}, Distinct: $3.(bool)}
+			$$ = &ast.AggregateFuncExpr{F: $1, Args: []ast.ExprNode{$4, ast.NewValueExpr($6, "", "")}, Distinct: $3.(bool)}
 		}
 	}
 |	"MEDIAN" '(' BuggyDefaultFalseDistinctOpt Expression ')' OptWindowingClause
