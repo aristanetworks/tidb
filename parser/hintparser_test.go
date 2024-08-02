@@ -342,6 +342,14 @@ func TestParseHint(t *testing.T) {
 				},
 			},
 		},
+		{
+			input: "PREFIX_SCAN()",
+			output: []*ast.TableOptimizerHint{
+				{
+					HintName: model.NewCIStr(("PREFIX_SCAN")),
+				},
+			},
+		},
 	}
 
 	for _, tc := range testCases {

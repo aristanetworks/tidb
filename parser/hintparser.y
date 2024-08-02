@@ -130,6 +130,9 @@ import (
 	hintLooseScan       "LOOSESCAN"
 	hintMaterialization "MATERIALIZATION"
 
+	/* NetSQL hints */
+	hintPrefixScan "PREFIX_SCAN"
+
 %type	<ident>
 	Identifier                             "identifier (including keywords)"
 	QueryBlockOpt                          "Query block identifier optional"
@@ -636,6 +639,7 @@ NullaryHintName:
 |	"STRAIGHT_JOIN"
 |	"SEMI_JOIN_REWRITE"
 |	"NO_DECORRELATE"
+|	"PREFIX_SCAN"
 
 HintQueryType:
 	"OLAP"
@@ -722,4 +726,6 @@ Identifier:
 |	"FIRSTMATCH"
 |	"LOOSESCAN"
 |	"MATERIALIZATION"
+/* NetSQL hints */
+|	"PREFIX_SCAN"
 %%

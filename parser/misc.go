@@ -990,6 +990,9 @@ var hintTokenMap = map[string]int{
 	"FIRSTMATCH":      hintFirstMatch,
 	"LOOSESCAN":       hintLooseScan,
 	"MATERIALIZATION": hintMaterialization,
+
+	// NetSQL hint names:
+	"PREFIX_SCAN": hintPrefixScan,
 }
 
 func (s *Scanner) isTokenIdentifier(lit string, offset int) int {
