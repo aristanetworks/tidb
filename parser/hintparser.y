@@ -131,7 +131,8 @@ import (
 	hintMaterialization "MATERIALIZATION"
 
 	/* NetSQL hints */
-	hintPrefixScan "PREFIX_SCAN"
+	hintPrefixScan             "PREFIX_SCAN"
+	hintPrefixScanCheckParents "PREFIX_SCAN_CHECK_PARENTS"
 
 %type	<ident>
 	Identifier                             "identifier (including keywords)"
@@ -640,6 +641,7 @@ NullaryHintName:
 |	"SEMI_JOIN_REWRITE"
 |	"NO_DECORRELATE"
 |	"PREFIX_SCAN"
+|	"PREFIX_SCAN_CHECK_PARENTS"
 
 HintQueryType:
 	"OLAP"
@@ -728,4 +730,5 @@ Identifier:
 |	"MATERIALIZATION"
 /* NetSQL hints */
 |	"PREFIX_SCAN"
+|	"PREFIX_SCAN_CHECK_PARENTS"
 %%

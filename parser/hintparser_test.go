@@ -350,6 +350,14 @@ func TestParseHint(t *testing.T) {
 				},
 			},
 		},
+		{
+			input: "PREFIX_SCAN_CHECK_PARENTS()",
+			output: []*ast.TableOptimizerHint{
+				{
+					HintName: model.NewCIStr(("PREFIX_SCAN_CHECK_PARENTS")),
+				},
+			},
+		},
 	}
 
 	for _, tc := range testCases {

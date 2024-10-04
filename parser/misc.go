@@ -992,7 +992,8 @@ var hintTokenMap = map[string]int{
 	"MATERIALIZATION": hintMaterialization,
 
 	// NetSQL hint names:
-	"PREFIX_SCAN": hintPrefixScan,
+	"PREFIX_SCAN":               hintPrefixScan,
+	"PREFIX_SCAN_CHECK_PARENTS": hintPrefixScanCheckParents,
 }
 
 func (s *Scanner) isTokenIdentifier(lit string, offset int) int {
