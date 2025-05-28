@@ -2168,6 +2168,9 @@ func TestBuiltin(t *testing.T) {
 		{`SELECT JSON_TYPE('[123]');`, true, "SELECT JSON_TYPE(_UTF8MB4'[123]')"},
 		{`SELECT JSON_TYPE();`, true, "SELECT JSON_TYPE()"},
 
+		// for map extract (clickhouse)
+		{`SELECT m['key'] FROM t`, true, "SELECT JSON_EXTRACT(`m`, _UTF8MB4'key') FROM `t`"},
+
 		// For two json grammar sugar.
 		{`SELECT a->'$.a' FROM t`, true, "SELECT JSON_EXTRACT(`a`, _UTF8MB4'$.a') FROM `t`"},
 		{`SELECT a->>'$.a' FROM t`, true, "SELECT JSON_UNQUOTE(JSON_EXTRACT(`a`, _UTF8MB4'$.a')) FROM `t`"},
@@ -4420,6 +4423,9 @@ func TestType(t *testing.T) {
 
 		// for json type
 		{`create table t (a JSON);`, true, "CREATE TABLE `t` (`a` JSON)"},
+
+		// // for map type
+		// {`create table t (a MAP);`, true, "CREATE TABLE `t` (`a` MAP)"},
 	}
 	RunTest(t, table, false)
 }
