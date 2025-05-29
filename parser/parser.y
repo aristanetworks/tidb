@@ -7279,6 +7279,11 @@ SimpleExpr:
 		extract := &ast.FuncCallExpr{FnName: model.NewCIStr(ast.JSONExtract), Args: []ast.ExprNode{$1, expr}}
 		$$ = &ast.FuncCallExpr{FnName: model.NewCIStr(ast.JSONUnquote), Args: []ast.ExprNode{extract}}
 	}
+|	SimpleIdent '[' stringLit ']'
+	{
+		expr := ast.NewValueExpr($3, parser.charset, parser.collation)
+		$$ = &ast.FuncCallExpr{FnName: model.NewCIStr(ast.JSONExtract), Args: []ast.ExprNode{$1, expr}}
+	}
 
 DistinctKwd:
 	"DISTINCT"
