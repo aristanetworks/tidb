@@ -828,6 +828,7 @@ var tokenMap = map[string]int{
 // ADDDATE, SESSION_USER, SUBDATE, and SYSTEM_USER are exceptions because they are actually recognized as
 // identifiers even in `create table adddate (a int)`.
 var btFuncTokenMap = map[string]int{
+	"ANY":                   builtinAny,
 	"BIT_AND":               builtinBitAnd,
 	"BIT_OR":                builtinBitOr,
 	"BIT_XOR":               builtinBitXor,
