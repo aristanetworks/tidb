@@ -9037,9 +9037,13 @@ WindowFuncCall:
 		}
 		$$ = &ast.WindowFuncExpr{F: $1, Args: args, IgnoreNull: $6.(bool), Spec: $7.(ast.WindowSpec)}
 	}
-|	"LEADINFRAME" '(' Expression ')' WindowingClause
+|	"LEADINFRAME" '(' Expression OptLeadLagInfo ')' OptNullTreatment WindowingClause
 	{
-		$$ = &ast.WindowFuncExpr{F: $1, Args: []ast.ExprNode{$3}, Spec: $5.(ast.WindowSpec)}
+		args := []ast.ExprNode{$3}
+		if $4 != nil {
+			args = append(args, $4.([]ast.ExprNode)...)
+		}
+		$$ = &ast.WindowFuncExpr{F: $1, Args: args, IgnoreNull: $6.(bool), Spec: $7.(ast.WindowSpec)}
 	}
 |	"LAG" '(' Expression OptLeadLagInfo ')' OptNullTreatment WindowingClause
 	{
@@ -9049,9 +9053,13 @@ WindowFuncCall:
 		}
 		$$ = &ast.WindowFuncExpr{F: $1, Args: args, IgnoreNull: $6.(bool), Spec: $7.(ast.WindowSpec)}
 	}
-|	"LAGINFRAME" '(' Expression ')' WindowingClause
+|	"LAGINFRAME" '(' Expression OptLeadLagInfo ')' OptNullTreatment WindowingClause
 	{
-		$$ = &ast.WindowFuncExpr{F: $1, Args: []ast.ExprNode{$3}, Spec: $5.(ast.WindowSpec)}
+		args := []ast.ExprNode{$3}
+		if $4 != nil {
+			args = append(args, $4.([]ast.ExprNode)...)
+		}
+		$$ = &ast.WindowFuncExpr{F: $1, Args: args, IgnoreNull: $6.(bool), Spec: $7.(ast.WindowSpec)}
 	}
 |	"FIRST_VALUE" '(' Expression ')' OptNullTreatment WindowingClause
 	{
