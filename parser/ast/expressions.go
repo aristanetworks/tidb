@@ -1483,3 +1483,52 @@ func ExpressionDeepEqual(a ExprNode, b ExprNode) bool {
 	b.Accept(cleanerB)
 	return result
 }
+
+// MapExpr is the expression for accessing value in a map with a key
+type MapExpr struct {
+	exprNode
+	// Map is the map to access.
+	Map *ColumnNameExpr
+	// Key is the map key
+	Key ExprNode
+}
+
+// Restore the ExprNode
+func (n *MapExpr) Restore(ctx *format.RestoreCtx) error {
+	n.Map.Restore(ctx)
+	ctx.WritePlain("[")
+	n.Key.Restore(ctx)
+	ctx.WritePlain("]")
+	return nil
+}
+
+// Format the ExprNode into a Writer.
+func (n *MapExpr) Format(w io.Writer) {
+	n.Map.Format(w)
+	fmt.Fprint(w, "[")
+	n.Key.Format(w)
+	fmt.Fprint(w, "]")
+}
+
+// Accept a Visitor
+func (n *MapExpr) Accept(v Visitor) (Node, bool) {
+	newNode, skipChildren := v.Enter(n)
+	if skipChildren {
+		return v.Leave(newNode)
+	}
+	n = newNode.(*MapExpr)
+
+	newMap, ok := n.Map.Accept(v)
+	if !ok {
+		return n, false
+	}
+	n.Map = newMap.(*ColumnNameExpr)
+
+	newKey, ok := n.Key.Accept(v)
+	if !ok {
+		return n, false
+	}
+	n.Key = newKey.(ExprNode)
+
+	return v.Leave(n)
+}
