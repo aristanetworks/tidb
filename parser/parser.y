@@ -1482,8 +1482,8 @@ import (
 /* A dummy token to force the priority of TableRef production in a join. */
 %left tableRefPriority
 %precedence lowerThanParenthese
-%right '('
-%left ')'
+%right '(' '['
+%left ')' ']'
 %precedence higherThanParenthese
 %left join straightJoin inner cross left right full natural
 %precedence lowerThanOn
@@ -6825,23 +6825,6 @@ Literal:
 		$$ = ast.NewValueExpr($1, parser.charset, parser.collation)
 	}
 |	StringLiteral %prec lowerThanStringLitToken
-|	"UNDERSCORE_CHARSET" stringLit
-	{
-		// See https://dev.mysql.com/doc/refman/5.7/en/charset-literal.html
-		co, err := charset.GetDefaultCollationLegacy($1)
-		if err != nil {
-			yylex.AppendError(ast.ErrUnknownCharacterSet.GenWithStack("Unsupported character introducer: '%-.64s'", $1))
-			return 1
-		}
-		expr := ast.NewValueExpr($2, $1, co)
-		tp := expr.GetType()
-		tp.SetCharset($1)
-		tp.SetCollate(co)
-		if tp.GetCollate() == charset.CollationBin {
-			tp.AddFlag(mysql.BinaryFlag)
-		}
-		$$ = expr
-	}
 |	hexLit
 	{
 		$$ = ast.NewValueExpr($1, parser.charset, parser.collation)
@@ -6887,6 +6870,23 @@ StringLiteral:
 	stringLit
 	{
 		expr := ast.NewValueExpr($1, parser.charset, parser.collation)
+		$$ = expr
+	}
+|	"UNDERSCORE_CHARSET" stringLit
+	{
+		// See https://dev.mysql.com/doc/refman/5.7/en/charset-literal.html
+		co, err := charset.GetDefaultCollationLegacy($1)
+		if err != nil {
+			yylex.AppendError(ast.ErrUnknownCharacterSet.GenWithStack("Unsupported character introducer: '%-.64s'", $1))
+			return 1
+		}
+		expr := ast.NewValueExpr($2, $1, co)
+		tp := expr.GetType()
+		tp.SetCharset($1)
+		tp.SetCollate(co)
+		if tp.GetCollate() == charset.CollationBin {
+			tp.AddFlag(mysql.BinaryFlag)
+		}
 		$$ = expr
 	}
 |	StringLiteral stringLit
@@ -7280,10 +7280,9 @@ SimpleExpr:
 		extract := &ast.FuncCallExpr{FnName: model.NewCIStr(ast.JSONExtract), Args: []ast.ExprNode{$1, expr}}
 		$$ = &ast.FuncCallExpr{FnName: model.NewCIStr(ast.JSONUnquote), Args: []ast.ExprNode{extract}}
 	}
-|	SimpleIdent '[' stringLit ']'
+|	SimpleIdent '[' StringLiteral ']'
 	{
-		expr := ast.NewValueExpr($3, parser.charset, parser.collation)
-		$$ = &ast.FuncCallExpr{FnName: model.NewCIStr(ast.JSONExtract), Args: []ast.ExprNode{$1, expr}}
+		$$ = &ast.MapExpr{Map: $1.(*ast.ColumnNameExpr), Key: $3}
 	}
 
 DistinctKwd:
