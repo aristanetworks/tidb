@@ -854,7 +854,7 @@ import (
 	MapKey                          "key of a map"
 	SimpleIdent                     "Simple Identifier expression"
 	SumExpr                         "aggregate functions"
-	FunctionArg                            "function call argument"
+	FunctionArg                     "function call argument"
 	FunctionCallGeneric             "Function call with Identifier"
 	FunctionCallKeyword             "Function call with keyword as function name"
 	FunctionCallNonKeyword          "Function call with nonkeyword as function name"
@@ -7275,7 +7275,7 @@ SimpleExpr:
 	{
 		$$ = &ast.ValuesExpr{Column: $3.(*ast.ColumnNameExpr)}
 	}
-	// Syntax of json extract conflicts with lambda expression
+// Syntax of json extract conflicts with lambda expression
 // |	SimpleIdent jss stringLit
 // 	{
 // 		expr := ast.NewValueExpr($3, parser.charset, parser.collation)
