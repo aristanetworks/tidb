@@ -849,12 +849,8 @@ import (
 	SetExpr                         "Set variable statement value's expression"
 	BitExpr                         "bit expression"
 	SimpleExpr                      "simple expression"
-	LambdaExpr                      "lambda expression"
-	LambdaParam                     "parameter of lambda expression"
-	MapKey                          "key of a map"
 	SimpleIdent                     "Simple Identifier expression"
 	SumExpr                         "aggregate functions"
-	FunctionArg                     "function call argument"
 	FunctionCallGeneric             "Function call with Identifier"
 	FunctionCallKeyword             "Function call with keyword as function name"
 	FunctionCallNonKeyword          "Function call with nonkeyword as function name"
@@ -1051,7 +1047,6 @@ import (
 	ExtendedPriv                           "Extended privileges like LOAD FROM S3 or dynamic privileges"
 	MaxValueOrExpressionList               "maxvalue or expression list"
 	ExpressionListOpt                      "expression list opt"
-	FunctionArgs                           "function call argument list"
 	FetchFirstOpt                          "Fetch First/Next Option"
 	FuncDatetimePrecListOpt                "Function datetime precision list opt"
 	FuncDatetimePrecList                   "Function datetime precision list"
@@ -1481,7 +1476,6 @@ import (
 %precedence remove
 %precedence lowerThenOrder
 %precedence order
-%left jss
 %precedence lowerThanFunction
 %precedence function
 
@@ -7275,26 +7269,21 @@ SimpleExpr:
 	{
 		$$ = &ast.ValuesExpr{Column: $3.(*ast.ColumnNameExpr)}
 	}
-// Syntax of json extract conflicts with lambda expression
-// |	SimpleIdent jss stringLit
-// 	{
-// 		expr := ast.NewValueExpr($3, parser.charset, parser.collation)
-// 		$$ = &ast.FuncCallExpr{FnName: model.NewCIStr(ast.JSONExtract), Args: []ast.ExprNode{$1, expr}}
-// 	}
+|	SimpleIdent jss stringLit
+	{
+		expr := ast.NewValueExpr($3, parser.charset, parser.collation)
+		$$ = &ast.FuncCallExpr{FnName: model.NewCIStr(ast.JSONExtract), Args: []ast.ExprNode{$1, expr}}
+	}
 |	SimpleIdent juss stringLit
 	{
 		expr := ast.NewValueExpr($3, parser.charset, parser.collation)
 		extract := &ast.FuncCallExpr{FnName: model.NewCIStr(ast.JSONExtract), Args: []ast.ExprNode{$1, expr}}
 		$$ = &ast.FuncCallExpr{FnName: model.NewCIStr(ast.JSONUnquote), Args: []ast.ExprNode{extract}}
 	}
-|	SimpleIdent '[' MapKey ']'
+|	SimpleIdent '[' StringLiteral ']'
 	{
 		$$ = &ast.MapExpr{Map: $1.(*ast.ColumnNameExpr), Key: $3}
 	}
-
-MapKey:
-	StringLiteral
-|	LambdaParam
 
 DistinctKwd:
 	"DISTINCT"
@@ -7935,14 +7924,14 @@ OptGConcatSeparator:
 	}
 
 FunctionCallGeneric:
-	identifier '(' FunctionArgs ')'
+	identifier '(' ExpressionListOpt ')'
 	{
 		$$ = &ast.FuncCallExpr{
 			FnName: model.NewCIStr($1),
 			Args:   $3.([]ast.ExprNode),
 		}
 	}
-|	Identifier '.' Identifier '(' FunctionArgs ')'
+|	Identifier '.' Identifier '(' ExpressionListOpt ')'
 	{
 		var tp ast.FuncCallExprType
 		if isInTokenMap($3) {
@@ -7956,35 +7945,6 @@ FunctionCallGeneric:
 			FnName: model.NewCIStr($3),
 			Args:   $5.([]ast.ExprNode),
 		}
-	}
-
-LambdaParam:
-	identifier
-	{
-		$$ = &ast.LambdaParamExpr{Name: model.NewCIStr($1)}
-	}
-
-LambdaExpr:
-	LambdaParam jss Expression
-	{
-		$$ = &ast.LambdaExpr{Param: $1.(*ast.LambdaParamExpr), Expr: $3}
-	}
-
-FunctionArg:
-	Expression
-|	LambdaExpr
-
-FunctionArgs:
-	{
-		$$ = []ast.ExprNode{}
-	}
-|	FunctionArg
-	{
-		$$ = []ast.ExprNode{$1.(ast.ExprNode)}
-	}
-|	FunctionArgs ',' FunctionArg
-	{
-		$$ = append($1.([]ast.ExprNode), $3.(ast.ExprNode))
 	}
 
 FuncDatetimePrec:

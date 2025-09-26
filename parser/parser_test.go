@@ -2179,7 +2179,7 @@ func TestBuiltin(t *testing.T) {
 		{`SELECT m['key'] FROM t`, true, "SELECT `m`[_UTF8MB4'key'] FROM `t`"},
 
 		// For two json grammar sugar.
-		// {`SELECT a->'$.a' FROM t`, true, "SELECT JSON_EXTRACT(`a`, _UTF8MB4'$.a') FROM `t`"},
+		{`SELECT a->'$.a' FROM t`, true, "SELECT JSON_EXTRACT(`a`, _UTF8MB4'$.a') FROM `t`"},
 		{`SELECT a->>'$.a' FROM t`, true, "SELECT JSON_UNQUOTE(JSON_EXTRACT(`a`, _UTF8MB4'$.a')) FROM `t`"},
 		{`SELECT '{}'->'$.a' FROM t`, false, ""},
 		{`SELECT '{}'->>'$.a' FROM t`, false, ""},
@@ -7146,15 +7146,6 @@ func TestTTLTableOption(t *testing.T) {
 		{"create table t (created_at datetime) TTL_ENABLE = 'test_case'", false, ""},
 		{"create table t (created_at datetime) /*T![ttl] TTL_ENABLE = 'test_case' */", false, ""},
 		{"alter table t /*T![ttl] TTL_ENABLE = 'test_case' */", false, ""},
-	}
-
-	RunTest(t, table, false)
-}
-
-func TestLambda(t *testing.T) {
-	table := []testCase{
-		{"select arrayMap(x -> x*x), cola from t", true, "SELECT ARRAYMAP(x->`x`*`x`),`cola` FROM `t`"},
-		{"select arrayMap(k -> entity[k]) from t", true, "SELECT ARRAYMAP(k->`entity`[k]) FROM `t`"},
 	}
 
 	RunTest(t, table, false)
