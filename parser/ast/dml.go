@@ -3125,7 +3125,9 @@ func (n *ShowStmt) Restore(ctx *format.RestoreCtx) error {
 		default:
 			return errors.New("Unknown ShowStmt type")
 		}
-		restoreShowLikeOrWhereOpt()
+		if err := restoreShowLikeOrWhereOpt(); err != nil {
+			return err
+		}
 	}
 	return nil
 }
