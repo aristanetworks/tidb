@@ -342,6 +342,7 @@ var tokenMap = map[string]int{
 	"FETCH":                    fetch,
 	"FIELDS":                   fields,
 	"FILE":                     file,
+	"FINAL":                    final,
 	"FIRST":                    first,
 	"FIXED":                    fixed,
 	"FLASHBACK":                flashback,

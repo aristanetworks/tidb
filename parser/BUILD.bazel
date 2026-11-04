@@ -34,6 +34,7 @@ go_test(
         "bench_test.go",
         "consistent_test.go",
         "digester_test.go",
+        "final_test.go",
         "hintparser_test.go",
         "lexer_test.go",
         "main_test.go",
