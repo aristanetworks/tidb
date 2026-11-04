@@ -280,6 +280,8 @@ type TableName struct {
 	IndexHints     []*IndexHint
 	PartitionNames []model.CIStr
 	TableSample    *TableSample
+	// Final applies ClickHouse merge logic when reading the table.
+	Final bool
 	// AS OF is used to see the data as it was at a specific point in time.
 	AsOf *AsOfClause
 }
@@ -317,6 +319,12 @@ func (n *TableName) restorePartitions(ctx *format.RestoreCtx) {
 	}
 }
 
+func (n *TableName) restoreFinal(ctx *format.RestoreCtx) {
+	if n.Final {
+		ctx.WriteKeyWord(" FINAL")
+	}
+}
+
 func (n *TableName) restoreIndexHints(ctx *format.RestoreCtx) error {
 	for _, value := range n.IndexHints {
 		ctx.WritePlain(" ")
@@ -330,6 +338,7 @@ func (n *TableName) restoreIndexHints(ctx *format.RestoreCtx) error {
 func (n *TableName) Restore(ctx *format.RestoreCtx) error {
 	n.restoreName(ctx)
 	n.restorePartitions(ctx)
+	n.restoreFinal(ctx)
 	if err := n.restoreIndexHints(ctx); err != nil {
 		return err
 	}
@@ -544,6 +553,8 @@ func (n *TableSource) Restore(ctx *format.RestoreCtx) error {
 			ctx.WriteKeyWord(" AS ")
 			ctx.WriteName(asName)
 		}
+
+		tn.restoreFinal(ctx)
 
 		if tn.AsOf != nil {
 			ctx.WritePlain(" ")

@@ -53,6 +53,7 @@ import (
 	identifier  "identifier"
 	asof        "AS OF"
 	toTimestamp "TO TIMESTAMP"
+	final       "FINAL"
 
 	/*yy:token "_%c"    */
 	underscoreCS "UNDERSCORE_CHARSET"
@@ -1224,6 +1225,7 @@ import (
 	TableAliasRefList                      "table alias reference list"
 	TableAsName                            "table alias name"
 	TableAsNameOpt                         "table alias name optional"
+	FinalOpt                               "ClickHouse FINAL modifier optional"
 	TableElement                           "table definition element"
 	TableElementList                       "table definition element list"
 	TableElementListOpt                    "table definition element list optional"
@@ -1410,6 +1412,7 @@ import (
 
 %type	<ident>
 	Identifier                      "identifier or unreserved keyword"
+	TableAliasIdentifier "identifier other than unquoted FINAL"
 	NotKeywordToken                 "Tokens not mysql keyword but treated specially"
 	UnReservedKeyword               "MySQL unreserved keywords"
 	TiDBKeyword                     "TiDB added keywords"
@@ -6067,6 +6070,10 @@ IndexInvisible:
 
 /**********************************Identifier********************************************/
 Identifier:
+	TableAliasIdentifier
+|	"FINAL"
+
+TableAliasIdentifier:
 	identifier
 |	UnReservedKeyword
 |	NotKeywordToken
@@ -9167,16 +9174,17 @@ TableRef:
 |	JoinTable
 
 TableFactor:
-	TableName PartitionNameListOpt TableAsNameOpt AsOfClauseOpt IndexHintListOpt TableSampleOpt
+	TableName PartitionNameListOpt TableAsNameOpt FinalOpt AsOfClauseOpt IndexHintListOpt TableSampleOpt
 	{
 		tn := $1.(*ast.TableName)
 		tn.PartitionNames = $2.([]model.CIStr)
-		tn.IndexHints = $5.([]*ast.IndexHint)
-		if $6 != nil {
-			tn.TableSample = $6.(*ast.TableSample)
+		tn.Final = $4.(bool)
+		tn.IndexHints = $6.([]*ast.IndexHint)
+		if $7 != nil {
+			tn.TableSample = $7.(*ast.TableSample)
 		}
-		if $4 != nil {
-			tn.AsOf = $4.(*ast.AsOfClause)
+		if $5 != nil {
+			tn.AsOf = $5.(*ast.AsOfClause)
 		}
 		$$ = &ast.TableSource{Source: tn, AsName: $3.(model.CIStr)}
 	}
@@ -9209,8 +9217,18 @@ TableAsNameOpt:
 	}
 |	TableAsName
 
+FinalOpt:
+	/* empty */
+	{
+		$$ = false
+	}
+|	"FINAL"
+	{
+		$$ = true
+	}
+
 TableAsName:
-	Identifier
+	TableAliasIdentifier
 	{
 		$$ = model.NewCIStr($1)
 	}

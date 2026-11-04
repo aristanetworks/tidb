@@ -46,7 +46,11 @@ func TestKeywordConsistent(t *testing.T) {
 		requires.NotEqual(t, k, v)
 		requires.Equal(t, tokenMap[v], tokenMap[k])
 	}
-	keywordCount := len(reservedKeywords) + len(unreservedKeywords) + len(notKeywordTokens) + len(tidbKeywords)
+	// Contextual keywords such as FINAL are accepted directly by Identifier,
+	// outside the collections shared with implicit table aliases.
+	identifierKeywords := extractKeywordsFromCollectionDef(content, "\nIdentifier:")
+	keywordCount := len(reservedKeywords) + len(unreservedKeywords) + len(notKeywordTokens) +
+		len(tidbKeywords) + len(identifierKeywords)
 	requires.Equal(t, keywordCount-len(windowFuncTokenMap), len(tokenMap)-len(aliases))
 
 	unreservedCollectionDef := extractKeywordsFromCollectionDef(content, "\nUnReservedKeyword:")
